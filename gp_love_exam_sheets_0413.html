@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GP 애정고사 | GP Trivia Challenge</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,sans-serif;background:#F5F0E8;color:#000;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+input{font-family:inherit}
+.hidden{display:none!important}
+
+/* Tab bar */
+.tab-bar{display:flex;justify-content:center;gap:0;padding:12px 16px 0;background:#000}
+.tab-bar.admin-bg{background:#F5F0E8}
+.tab-btn{padding:10px 24px;font-size:13px;font-weight:700;border:none;border-radius:10px 10px 0 0;background:transparent;color:#999;transition:all .2s}
+.tab-btn.active-quiz{background:#1a1a1a;color:#fff}
+.tab-btn.active-admin{background:#fff;color:#000}
+
+/* Dark page (quiz) — exam paper style */
+.pg-dark{
+  min-height:calc(100vh - 46px);
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 31px,rgba(180,160,130,0.18) 31px,rgba(180,160,130,0.18) 32px),
+    radial-gradient(ellipse at 20% 0%,rgba(249,66,58,0.04) 0%,transparent 50%),
+    #F5F0E8;
+  padding:20px 16px 40px;
+  display:flex;flex-direction:column;align-items:center
+}
+.cd{background:#FFFDF8;border:1.5px solid #D4C9B8;border-radius:16px;padding:24px 20px;max-width:580px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.03)}
+.pill{display:inline-block;border-radius:99px;padding:3px 12px;font-size:11px;font-weight:700}
+.bp{background:#f9423a;color:#fff;border:none;border-radius:12px;padding:13px 32px;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(249,66,58,.25);transition:all .15s}
+.bp:hover{background:#e03830;box-shadow:0 6px 20px rgba(249,66,58,.35)}
+.inp{background:#F5F0E8;border:1.5px solid #D4C9B8;border-radius:10px;padding:12px 14px;color:#000;font-size:14px;outline:none;flex:1;width:100%;transition:border-color .2s}
+.inp:focus{border-color:#f9423a}
+
+/* Light page (admin) */
+.pg-light{min-height:calc(100vh - 46px);background:#F5F0E8;padding:24px 16px 48px}
+.pg-light .container{max-width:920px;margin:0 auto}
+.stat-card{background:#FFFDF8;border:1px solid #D4C9B8;border-radius:14px;padding:16px 18px;flex:1;min-width:110}
+.stat-label{color:#888;font-size:10px;font-weight:600;margin-bottom:5px}
+.stat-value{font-size:26px;font-weight:800;line-height:1.1}
+
+/* Option buttons */
+.opt-btn{background:#F5F0E8;border:1.5px solid #D4C9B8;border-radius:10px;padding:12px 14px;text-align:left;display:flex;align-items:flex-start;gap:10px;width:100%;transition:all .15s}
+.opt-btn:not(:disabled):hover{border-color:#f9423a;background:#FFFDF8}
+.opt-num{min-width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+
+/* Admin table */
+.adm-row{display:grid;grid-template-columns:32px 1fr 1fr 160px 48px 42px 26px;padding:10px 14px;align-items:center;gap:4px;cursor:pointer;border-bottom:1px solid #E8DFD0;transition:background .15s}
+.adm-row:hover{background:rgba(249,66,58,.03)}
+.adm-header{background:#F5F0E8;font-size:9px;font-weight:700;color:#888;cursor:default}
+.adm-header:hover{background:#F5F0E8}
+.q-dot{width:24px;height:18px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:700}
+.expand-detail{padding:14px 18px 18px;background:rgba(0,0,0,.02);border-bottom:1px solid #E8DFD0}
+.detail-q{display:grid;grid-template-columns:50px 1fr 90px 90px 24px;align-items:center;gap:6px;padding:8px 10px;border-radius:7px;background:#FFFDF8;border:1px solid #E8DFD0;margin-bottom:4px}
+
+/* Progress bar */
+.progress-track{flex:1;height:5px;border-radius:99px;background:#E8DFD0;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f9423a,#ff7a74);border-radius:99px;transition:width .4s}
+
+/* Filter/Sort */
+.filter-btn{border-radius:8px;padding:6px 14px;font-size:11px;font-weight:600;border:1px solid #D4C9B8;background:transparent;color:#888}
+.filter-btn.active{background:#000;color:#fff;border-color:#000}
+.sort-btn{background:transparent;border:none;font-size:10px;font-weight:600;color:#888;padding:4px 6px}
+.sort-btn.active{color:#f9423a;text-decoration:underline}
+
+/* Board row in quiz */
+.board-row{display:grid;grid-template-columns:28px 1fr 70px 44px 40px;align-items:center;padding:8px 6px;border-radius:8px}
+.board-row.me{background:rgba(249,66,58,.08);border:1.5px solid #f9423a}
+
+/* Score dots */
+.score-dot{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+
+/* Exam paper decorative elements */
+.exam-header{
+  position:relative;
+  text-align:center;
+  padding:20px;
+  margin-bottom:20px;
+  max-width:580px;width:100%;
+}
+.exam-header::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:4px;
+  background:repeating-linear-gradient(90deg,#f9423a 0,#f9423a 10px,transparent 10px,transparent 14px);
+}
+.exam-header::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:1.5px;
+  background:#000;
+}
+
+/* Stamp effect for score */
+.stamp{
+  display:inline-block;
+  border:3px solid;
+  border-radius:50%;
+  width:80px;height:80px;
+  line-height:80px;
+  text-align:center;
+  font-weight:900;
+  font-size:28px;
+  transform:rotate(-8deg);
+  opacity:.85;
+}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz3dYdYRgv14aYLhXujRpgKU10DxVRcffdut7OEAbDvMqlCJ4hNbwRz-e_BmY8HyO2QBw/exec";
+
+function sheetName(storageKey) {
+  return storageKey.replace(/^gp-exam-html-/, "");
+}
+
+const QUESTIONS_VOL3 = [
+  {id:1,type:"multiple",tag:"COVER STORY",short:"Project Windless 소개",shortEn:"Project Windless Overview",
+   question:"다음 중 Project Windless에 관한 설명으로 옳지 않은 것은?",
+   questionEn:"Which of the following is NOT TRUE about Project Windless?",
+   options:["이영도 작가의 소설 '눈물을 마시는 새' 세계관을 기반으로 한다.\nIt is based on the universe of Lee Yeongdo's novel 'The Bird That Drinks Tears.'","원작 소설의 시점으로부터 약 1,500년 전을 무대로 택했다.\nThe game is set approximately 1,500 years before the original novel.","2023년 캐나다에 설립된 크래프톤 몬트리올 스튜디오가 게임의 개발을 맡고 있다.\nEstablished in 2023 in Canada, KRAFTON Montreal Studio is leading the development of this game.","크래프톤 몬트리올 스튜디오의 대표는 Far Cry 시리즈 등 다양한 프랜차이즈 게임 개발을 이끌어 온 패트릭 매테(Patrik Méthé)다.\nPatrik Méthé, who led various franchise projects including the Far Cry series, is the CEO of KRAFTON Montreal Studio.","원작 소설의 주인공을 그대로 게임의 주인공으로 내세웠다.\nThe protagonist of the original novel was directly adopted as the game's protagonist."],
+   answer:4,answerLabel:"5번 / Choice 5",
+   factCheck:"Project Windless는 원작 소설의 주인공이 아닌, 전설로만 전해지던 아라짓 왕국의 시조 '영웅왕'을 주인공으로 내세웠습니다.\nProject Windless features the legendary 'Hero King,' founder of the Arazit Kingdom, not the original novel's protagonist."},
+  {id:2,type:"multiple",tag:"COVER STORY",short:"SoP 트레일러 반응",shortEn:"SoP Trailer Response",
+   question:"다음 중 State of Play를 통한 Project Windless의 트레일러 공개 이후의 반응에 대한 설명으로 옳지 않은 것은?",
+   questionEn:"Which of the following is NOT TRUE about the response after Project Windless' trailer reveal at the State of Play?",
+   options:["Project Windless의 트레일러는 플레이스테이션 공식 유튜브에 올라온 이번 State of Play 트레일러 28개 중 전체 조회수 5위를 기록했다.\nProject Windless ranked 5th in total views among 28 State of Play trailers on the official PlayStation YouTube channel.","7일간 소셜 버즈는 공개 첫날 대비 160% 증가한 약 37,295건이었다.\nSocial buzz over 7 days increased 160% from launch day to approx. 37,295 mentions.","전 세계 43개국에서 약 866건의 관련 기사가 게재되었다.\nAbout 866 related articles were published across 43 countries worldwide.","공식 웹사이트 뉴스레터 구독자가 일주일 만에 1,746명 감소했다.\nThe official website newsletter lost 1,746 subscribers within a week.","개발자 일지(Dev Diary) 시청자의 81.6%가 '게임에 대한 관심이 높아졌다'고 응답했다.\n81.6% of Dev Diary viewers responded that their interest in the game increased."],
+   answer:3,answerLabel:"4번 / Choice 4",
+   factCheck:"공식 웹사이트 뉴스레터 구독자는 일주일 만에 1,746명 '증가'했습니다.\nThe number of newsletter subscribers has increased by 1,746, not decreased."},
+  {id:3,type:"ox",tag:"COVER STORY",short:"전투 시스템 두 가지 축",shortEn:"Two Core Combat Pillars",
+   question:"패트릭 메테 대표가 밝힌 Project Windless 전투 시스템의 두 가지 핵심 축은 '수많은 적의 밀도 높은 압박과 혼돈' 그리고 '거대하고 강력한 적을 상대할 때의 정밀함과 타이밍'이다.",
+   questionEn:"According to Patrik Méthé, the two core pillars of Project Windless's combat system are 'dense pressure and chaos from numerous enemies' and 'precision and timing when facing massive, powerful foes.'",
+   answer:"O",answerLabel:"O",
+   factCheck:"패트릭 메테 대표는 전투 철학의 두 가지 축으로 위 두 가지를 정확히 언급했습니다.\nPatrik Méthé precisely described these two pillars as the combat philosophy."},
+  {id:4,type:"multiple",tag:"PEOPLE",short:"PBM Part 소개",shortEn:"PBM Part Introduction",
+   question:"이번 호 PEOPLE 섹션에서 소개된 Publishing Business Management Part에 대한 설명으로 옳지 않은 것은?",
+   questionEn:"Which of the following is NOT true about the Publishing Business Management Part introduced in this issue's PEOPLE section?",
+   options:["GP의 운영 프로세스와 거버넌스를 설계하는 조직이다.\nIt is an organization that designs GP's operational processes and governance.","GP의 살림살이와 인사 운영, 조직 문화의 기틀을 잡는 역할을 한다.\nIt handles GP's budget management, HR operations, and organizational culture.","구성원들이 업무에만 몰입할 수 있도록 보이지 않는 곳에서 기반을 다진다.\nIt builds a solid foundation behind the scenes so members can focus on their work.","이번 인터뷰에는 총 여섯 분의 구성원이 참여했다.\nA total of six members participated in this interview."],
+   answer:3,answerLabel:"4번 / Choice 4",
+   factCheck:"이번 PEOPLE 섹션에서는 PBM Part의 네 분의 이야기를 담았다고 명시되어 있습니다. 여섯 분이 아닌 네 분입니다.\nThe article states it features stories of four members of the PBM Part, not six."},
+  {id:5,type:"short",tag:"COVER STORY",short:"서구권 밈 별명",shortEn:"Western Meme Nickname",
+   question:"Project Windless 트레일러 공개 후, 레콘 종족의 조류형 외형 때문에 서구권에서 패스트푸드 브랜드와 '갓 오브 워' 주인공을 합쳐 붙인 별명은?",
+   questionEn:"After the Project Windless trailer, what nickname did Western fans give the Rekon race by combining a fast-food brand with the God of War protagonist?",
+   answer:["KFC 크레토스","KFC크레토스","KFC Kratos"],answerLabel:"KFC 크레토스 / KFC Kratos",
+   factCheck:"KFC와 크레토스를 합친 'KFC 크레토스'라는 별칭으로 불렸습니다.\nFans coined the nickname 'KFC Kratos' combining KFC and the God of War's Kratos."},
+];
+
+const VOLUMES=[{key:"draft",label:"제3회 · Vol.9 (2026년 4월)",labelEn:"3rd · Vol.9 (Apr 2026)",storageKey:"gp-exam-html-draft",questions:QUESTIONS_VOL3}];
+const ADMIN_PW="gp2026!";
+
+const _cache = {};
+let _loading = false;
+
+async function gasCall(params) {
+  const qs = Object.entries(params).map(([k,v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join("&");
+  const res = await fetch(GAS_URL + "?" + qs, { redirect: "follow" });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return await res.json();
+}
+
+async function sLoadAsync(k) {
+  const sn = sheetName(k);
+  try {
+    const json = await gasCall({ action: "load", sheet: sn });
+    if (json.error) { console.error("sLoad error:", json.error); return _cache[sn] || []; }
+    _cache[sn] = json.data || [];
+    return _cache[sn];
+  } catch (e) { console.error("sLoad error:", e); return _cache[sn] || []; }
+}
+function sLoad(k) { return _cache[sheetName(k)] || []; }
+
+async function sSaveAsync(k, entry) {
+  const sn = sheetName(k);
+  try {
+    const json = await gasCall({ action: "save", sheet: sn, name: entry.name, team: entry.team, correct: entry.correct, total: entry.total, pct: entry.pct, ts: entry.ts, scores: JSON.stringify(entry.scores), answers: JSON.stringify(entry.answers), hidden: entry.hidden || false });
+    return json.ok || false;
+  } catch (e) { console.error("sSave error:", e); return false; }
+}
+
+async function sToggleHiddenAsync(k, name, ts) {
+  const sn = sheetName(k);
+  try { return await gasCall({ action: "toggleHidden", sheet: sn, name, ts }); }
+  catch (e) { console.error("sToggleHidden error:", e); return { error: e.message }; }
+}
+
+async function sClearAsync(k) {
+  const sn = sheetName(k);
+  try { const json = await gasCall({ action: "clearAll", sheet: sn }); if (json.ok) _cache[sn] = []; return json.ok || false; }
+  catch (e) { console.error("sClear error:", e); return false; }
+}
+
+async function refreshData() {
+  if (_loading) return;
+  _loading = true; showLoading(true);
+  await sLoadAsync(getVol().storageKey);
+  _loading = false; showLoading(false);
+  render();
+}
+
+function showLoading(on) {
+  let el = document.getElementById('loadingOverlay');
+  if (on) {
+    if (!el) {
+      el = document.createElement('div'); el.id = 'loadingOverlay';
+      el.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(245,240,232,.85);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(4px)';
+      el.innerHTML = '<div style="background:#FFFDF8;border:1.5px solid #D4C9B8;border-radius:12px;padding:24px 36px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.1)"><div style="font-size:28px;margin-bottom:8px">⏳</div><p style="color:#000;font-size:13px;font-weight:600">데이터 로딩 중...<br><span style="color:#888">Loading data...</span></p></div>';
+      document.body.appendChild(el);
+    }
+    el.style.display = 'flex';
+  } else if (el) { el.style.display = 'none'; }
+}
+
+const medal=i=>i===0?"🥇":i===1?"🥈":i===2?"🥉":`${i+1}`;
+const esc=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML;};
+const nl2br=s=>esc(s).replace(/\n/g,'<br>');
+
+let mode="quiz";
+let volIdx=VOLUMES.length-1;
+let quizState={view:"home",name:"",team:"",curQ:0,selected:null,shortVal:"",answered:false,scores:[],answers:[],statusMsg:""};
+let adminState={authed:false,pw:"",pwErr:false,filter:"all",search:"",expandedId:null,sortBy:"time"};
+
+function getVol(){return VOLUMES[volIdx];}
+function getBoard(){return sLoad(getVol().storageKey);}
+function getVisible(){return getBoard().filter(e=>!e.hidden);}
+
+function render(){
+  const app=document.getElementById('app');
+  let html='';
+  const tabBg=mode==="quiz"?"":"admin-bg";
+  html+=`<div class="tab-bar ${tabBg}">
+    <button class="tab-btn ${mode==='quiz'?'active-quiz':''}" onclick="setMode('quiz')">🎓 퀴즈 참여 Take Quiz</button>
+    <button class="tab-btn ${mode==='admin'?'active-admin':''}" onclick="setMode('admin')">📊 관리자 Admin</button>
+  </div>`;
+  if(mode==="quiz") html+=renderQuiz();
+  else html+=renderAdmin();
+  app.innerHTML=html;
+  setTimeout(bindEvents,0);
+}
+
+function setMode(m){mode=m;if(m==='admin')adminState.expandedId=null;render();}
+
+function renderQuiz(){
+  const vol=getVol();const qs=vol.questions;const TOTAL=qs.length;
+  const s=quizState;const board=getVisible();
+  if(s.view==="home") return renderQuizHome(vol,board);
+  if(s.view==="result") return renderQuizResult(vol,board,TOTAL);
+  return renderQuizQuestion(vol,TOTAL);
+}
+
+function renderQuizHome(vol,board){
+  const s=quizState;
+  let h=`<div class="pg-dark">
+    <div class="exam-header">
+      <span class="pill" style="background:rgba(249,66,58,.08);color:#f9423a;border:1px solid rgba(249,66,58,.2)">GP CONNECT</span>
+      <h1 style="font-size:26px;font-weight:800;margin:14px 0 2px;color:#000;letter-spacing:-0.5px">🎓 GP 애정고사</h1>
+      <p style="color:#f9423a;font-size:13px;font-weight:600;margin:0 0 6px">GP Trivia Challenge</p>
+      <p style="color:#888;font-size:13px">뉴스레터를 얼마나 꼼꼼히 읽으셨나요?<br>Think you caught everything in this issue?</p>
+    </div>`;
+  h+=`<div class="cd" style="margin-bottom:16px;padding:16px 20px">
+    <p style="color:#888;font-size:11px;font-weight:600;margin-bottom:8px">회차 선택 Select Volume</p>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">`;
+  VOLUMES.forEach((v,i)=>{
+    const sel=i===volIdx;
+    h+=`<button onclick="selectVol(${i})" style="background:${sel?'rgba(249,66,58,.08)':'transparent'};border:1px solid ${sel?'#f9423a':'#D4C9B8'};border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;color:${sel?'#f9423a':'#888'}">${esc(v.label)}</button>`;
+  });
+  h+=`</div></div>`;
+  h+=`<div class="cd" style="margin-bottom:20px">
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:4px;color:#000">${esc(vol.label)}</h3>
+    <p style="color:#888;font-size:11px;margin-bottom:14px">${esc(vol.labelEn)}</p>
+    <p style="color:#888;font-size:11px;margin-bottom:12px">이름과 소속을 입력해 주세요 / Please enter your name and team</p>
+    <div style="display:flex;gap:10px;margin-bottom:10px">
+      <input id="qName" class="inp" placeholder="이름 Name" value="${esc(s.name)}">
+      <input id="qTeam" class="inp" placeholder="소속 Team / Part" value="${esc(s.team)}">
+    </div>
+    <button class="bp" style="width:100%" onclick="startQuiz()">시작하기 Start</button>
+  </div>`;
+  h+=`<div class="cd">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-size:14px;font-weight:700;color:#000">🏆 GP 애정도 리더보드 GP Trivia Leaderboard <span style="color:#888;font-weight:500;font-size:11px">(${board.length})</span></h3>
+      <button onclick="refreshData()" style="background:none;border:none;color:#f9423a;font-size:11px;font-weight:600">새로고침 Refresh</button>
+    </div>`;
+  if(board.length===0) h+=`<p style="color:#888;font-size:12px;text-align:center;padding:14px 0">아직 참여자가 없습니다 No participants yet</p>`;
+  else board.slice(0,10).forEach((e,i)=>{
+    h+=`<div class="board-row" style="background:${i<3?(i===0?'rgba(249,66,58,.04)':'rgba(0,0,0,.02)'):'transparent'}">
+      <span style="font-size:${i<3?15:11}px;color:#888;font-weight:700">${medal(i)}</span>
+      <span style="font-size:12px;font-weight:600;color:#000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.name)}</span>
+      <span style="color:#888;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.team||'-')}</span>
+      <span style="text-align:center;color:#f9423a;font-size:12px;font-weight:700">${e.correct}/${e.total}</span>
+      <span style="text-align:center;font-size:10px;font-weight:700;border-radius:5px;padding:2px 0;background:${e.pct>=80?'rgba(22,163,74,.1)':e.pct>=40?'rgba(202,138,4,.1)':'rgba(220,38,38,.1)'};color:${e.pct>=80?'#16A34A':e.pct>=40?'#CA8A04':'#DC2626'}">${e.pct}%</span>
+    </div>`;
+  });
+  h+=`</div></div>`;
+  return h;
+}
+
+function renderQuizResult(vol,board,TOTAL){
+  const s=quizState;const correct=s.scores.filter(Boolean).length;const pct=Math.round((correct/TOTAL)*100);
+  let emoji,msg;
+  if(pct===100){emoji="🏆";msg="완벽합니다! GP 뉴스레터 마스터!\nPerfect! You're a GP Newsletter Master!";}
+  else if(pct>=80){emoji="🎉";msg="대단해요! 꼼꼼히 읽으셨군요!\nAwesome! You read it carefully!";}
+  else if(pct>=60){emoji="👏";msg="좋아요! 조금만 더 관심을!\nNice! A little more next time!";}
+  else if(pct>=40){emoji="💪";msg="다음엔 더 잘할 수 있어요!\nYou can do better next time!";}
+  else{emoji="📖";msg="뉴스레터를 한번 더 읽어보세요!\nTry reading the newsletter again!";}
+  const myRank=board.findIndex(e=>e.name===s.name&&e.team===s.team&&e.pct===pct);
+
+  let h=`<div class="pg-dark">
+    <div class="cd" style="text-align:center;padding:36px 28px;margin-bottom:20px;position:relative">
+      <div style="position:absolute;top:16px;right:20px">
+        <div class="stamp" style="color:${pct>=80?'#16A34A':pct>=40?'#CA8A04':'#f9423a'};border-color:${pct>=80?'#16A34A':pct>=40?'#CA8A04':'#f9423a'}">${pct}%</div>
+      </div>
+      <div style="font-size:48px;margin-bottom:8px">${emoji}</div>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:2px;color:#000">${esc(s.name)}</h2>
+      <p style="color:#888;font-size:12px;margin-bottom:12px">${esc(s.team)}</p>
+      <div style="font-size:52px;font-weight:800;color:#f9423a;margin:12px 0 8px;line-height:1">${correct}<span style="font-size:22px;color:#888">/${TOTAL}</span></div>
+      <span class="pill" style="background:${pct>=80?'rgba(22,163,74,.1)':pct>=40?'rgba(202,138,4,.1)':'rgba(249,66,58,.1)'};color:${pct>=80?'#16A34A':pct>=40?'#CA8A04':'#f9423a'}">정답률 Accuracy ${pct}%</span>
+      <p style="color:#555;font-size:13px;margin:14px 0 4px;white-space:pre-line">${esc(msg)}</p>
+      ${s.statusMsg?`<p style="color:${s.statusMsg.includes('실패')?'#DC2626':'#16A34A'};font-size:12px;font-weight:600;margin-top:10px">${esc(s.statusMsg)}</p>`:''}
+      <div style="display:flex;justify-content:center;gap:8px;margin:18px 0 0;flex-wrap:wrap">`;
+  s.scores.forEach((sc,i)=>{
+    h+=`<div class="score-dot" style="background:${sc?'rgba(22,163,74,.1)':'rgba(249,66,58,.1)'};border:1.5px solid ${sc?'#16A34A':'#f9423a'};color:${sc?'#16A34A':'#f9423a'}">${i+1}</div>`;
+  });
+  h+=`</div></div>`;
+  h+=`<div class="cd">
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#000">🏆 GP 애정도 리더보드 GP Trivia Leaderboard</h3>`;
+  board.slice(0,10).forEach((e,i)=>{
+    const isMe=myRank===i;
+    h+=`<div class="board-row ${isMe?'me':''}" style="background:${isMe?'rgba(249,66,58,.08)':i<3?(i===0?'rgba(249,66,58,.04)':'rgba(0,0,0,.02)'):'transparent'}">
+      <span style="font-size:${i<3?15:11}px;color:${isMe?'#f9423a':'#888'};font-weight:700">${medal(i)}</span>
+      <span style="font-size:12px;font-weight:${isMe?700:600};color:#000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.name)}${isMe?' ← You':''}</span>
+      <span style="color:#888;font-size:10px">${esc(e.team||'-')}</span>
+      <span style="text-align:center;color:#f9423a;font-size:12px;font-weight:700">${e.correct}/${e.total}</span>
+      <span style="text-align:center;font-size:10px;font-weight:700;border-radius:5px;padding:2px 0;background:${e.pct>=80?'rgba(22,163,74,.1)':e.pct>=40?'rgba(202,138,4,.1)':'rgba(249,66,58,.1)'};color:${e.pct>=80?'#16A34A':e.pct>=40?'#CA8A04':'#f9423a'}">${e.pct}%</span>
+    </div>`;
+  });
+  if(myRank>9) h+=`<p style="color:#f9423a;font-size:12px;font-weight:600;text-align:center;margin-top:10px">나의 순위 My rank: #${myRank+1}</p>`;
+  h+=`</div>
+    <div style="text-align:center;margin-top:20px"><button class="bp" onclick="goQuizHome()">처음으로 Back to Start</button></div>
+  </div>`;
+  return h;
+}
+
+function renderQuizQuestion(vol,TOTAL){
+  const s=quizState;const q=vol.questions[s.curQ];
+  const isCorrect=s.answered&&(q.type==="short"?q.answer.some(a=>a.replace(/\s/g,'').toLowerCase()===String(s.selected).replace(/\s/g,'').toLowerCase()):s.selected===q.answer);
+
+  let h=`<div class="pg-dark">
+    <div style="max-width:580px;width:100%;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span class="pill" style="background:rgba(249,66,58,.08);color:#f9423a;border:1px solid rgba(249,66,58,.2)">${esc(vol.label)}</span>
+        <span style="color:#888;font-size:11px;font-weight:600">${esc(s.name)} · ${esc(s.team)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="progress-track"><div class="progress-fill" style="width:${((s.curQ+(s.answered?1:0))/TOTAL)*100}%"></div></div>
+        <span style="color:#888;font-size:12px;font-weight:600">${s.curQ+1}/${TOTAL}</span>
+      </div>
+    </div>
+    <div class="cd">
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <span class="pill" style="background:rgba(0,0,0,.05);color:#555;border:1px solid #D4C9B8">${esc(q.tag)}</span>
+        <span class="pill" style="background:rgba(249,66,58,.08);color:#f9423a;border:1px solid rgba(249,66,58,.2)">${q.type==='multiple'?'객관식 Multiple Choice':q.type==='ox'?'OX True/False':'단답형 Short Answer'}</span>
+      </div>
+      <p style="color:#f9423a;font-size:13px;font-weight:800;margin-bottom:6px">[문제 Q${q.id}]</p>
+      <p style="font-size:14px;font-weight:500;line-height:1.75;margin-bottom:4px;color:#000">${esc(q.question)}</p>
+      <p style="color:#888;font-size:12px;line-height:1.6;margin-bottom:20px;font-style:italic">${esc(q.questionEn)}</p>`;
+
+  if(q.type==="multiple"){
+    h+=`<div style="display:flex;flex-direction:column;gap:8px">`;
+    q.options.forEach((opt,i)=>{
+      const isSel=s.selected===i,isAns=i===q.answer;
+      let bg='#F5F0E8',br='#D4C9B8',cl='#555',nbg='rgba(0,0,0,.06)',nc='#000';
+      if(s.answered){
+        if(isAns){bg='rgba(22,163,74,.08)';br='#16A34A';cl='#16A34A';nbg='#16A34A';nc='#fff';}
+        else if(isSel){bg='rgba(249,66,58,.08)';br='#f9423a';cl='#f9423a';nbg='#f9423a';nc='#fff';}
+      }else if(isSel){bg='rgba(249,66,58,.06)';br='#f9423a';cl='#000';}
+      h+=`<button class="opt-btn" style="background:${bg};border-color:${br}" onclick="pickAnswer(${i})" ${s.answered?'disabled':''}>
+        <span class="opt-num" style="background:${nbg};color:${nc}">${i+1}</span>
+        <span style="color:${cl};font-size:13px;font-weight:500;line-height:1.6;white-space:pre-line">${nl2br(opt)}</span>
+      </button>`;
+    });
+    h+=`</div>`;
+  }else if(q.type==="ox"){
+    h+=`<div style="display:flex;gap:10px">`;
+    ["O","X"].forEach(v=>{
+      const isSel=s.selected===v,isAns=v===q.answer;
+      let bg='#F5F0E8',br='#D4C9B8',cl='#555';
+      if(s.answered){if(isAns){bg='rgba(22,163,74,.08)';br='#16A34A';cl='#16A34A';}else if(isSel){bg='rgba(249,66,58,.08)';br='#f9423a';cl='#f9423a';}}
+      else if(isSel){bg='rgba(249,66,58,.06)';br='#f9423a';cl='#000';}
+      h+=`<button style="flex:1;background:${bg};border:1.5px solid ${br};border-radius:12px;padding:18px;font-size:26px;font-weight:800;color:${cl}" onclick="pickAnswer('${v}')" ${s.answered?'disabled':''}>${v}</button>`;
+    });
+    h+=`</div>`;
+  }else{
+    const brc=s.answered?(isCorrect?'#16A34A':'#f9423a'):'#D4C9B8';
+    h+=`<div style="display:flex;gap:8px">
+      <input id="shortInput" class="inp" style="border-color:${brc}" placeholder="정답 입력 Enter answer" value="${esc(s.shortVal||'')}" ${s.answered?'disabled':''}>
+      ${!s.answered?'<button class="bp" onclick="submitShort()">확인 OK</button>':''}
+    </div>`;
+  }
+
+  if(s.answered){
+    h+=`<div style="margin-top:18px;border-radius:10px;padding:14px 16px;background:${isCorrect?'rgba(22,163,74,.06)':'rgba(249,66,58,.06)'};border:1px solid ${isCorrect?'rgba(22,163,74,.2)':'rgba(249,66,58,.2)'}">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+        <span style="font-size:15px">${isCorrect?'✅':'❌'}</span>
+        <span style="font-size:12px;font-weight:700;color:${isCorrect?'#16A34A':'#f9423a'}">${isCorrect?'정답! Correct!':'오답 Wrong — 정답 Answer: '+esc(q.answerLabel)}</span>
+      </div>
+      <p style="color:#555;font-size:12px;line-height:1.7;white-space:pre-line"><span style="color:#f9423a;font-weight:700;font-size:10px">[Fact Check]</span> ${nl2br(q.factCheck)}</p>
+    </div>`;
+  }
+  h+=`</div>`;
+  if(s.answered){
+    h+=`<div style="text-align:center;margin-top:18px">
+      <button class="bp" onclick="nextQuestion()">${s.curQ+1>=TOTAL?'결과 보기 See Results':'다음 문제 Next →'}</button>
+    </div>`;
+  }
+  h+=`</div>`;
+  return h;
+}
+
+function selectVol(i){volIdx=i;refreshData();}
+function startQuiz(){
+  const n=document.getElementById('qName')?.value?.trim()||'';
+  const t=document.getElementById('qTeam')?.value?.trim()||'';
+  if(!n||!t)return alert('이름과 소속을 모두 입력해 주세요\nPlease enter both name and team');
+  quizState={view:"quiz",name:n,team:t,curQ:0,selected:null,shortVal:"",answered:false,scores:[],answers:[],statusMsg:""};
+  render();
+}
+function goQuizHome(){quizState={view:"home",name:"",team:"",curQ:0,selected:null,shortVal:"",answered:false,scores:[],answers:[],statusMsg:""};refreshData();}
+
+function pickAnswer(val){
+  if(quizState.answered)return;
+  const q=getVol().questions[quizState.curQ];
+  quizState.selected=val;quizState.answered=true;
+  const ok=q.type==="short"?q.answer.some(a=>a.replace(/\s/g,'').toLowerCase()===String(val).replace(/\s/g,'').toLowerCase()):val===q.answer;
+  quizState.scores.push(ok);
+  const disp=q.type==="multiple"?`${val+1}번`:String(val);
+  quizState.answers.push(disp);
+  render();
+}
+function submitShort(){const v=document.getElementById('shortInput')?.value?.trim();if(v)pickAnswer(v);}
+
+async function nextQuestion(){
+  const vol=getVol();const TOTAL=vol.questions.length;
+  if(quizState.curQ+1>=TOTAL){
+    const c=quizState.scores.filter(Boolean).length;
+    const entry={name:quizState.name,team:quizState.team,correct:c,total:TOTAL,pct:Math.round((c/TOTAL)*100),ts:Date.now(),scores:[...quizState.scores],answers:[...quizState.answers],hidden:false};
+    showLoading(true);
+    const ok=await sSaveAsync(vol.storageKey, entry);
+    await sLoadAsync(vol.storageKey);
+    showLoading(false);
+    quizState.statusMsg=ok?'✅ 결과가 저장되었습니다! Result saved!':'⚠️ 저장 실패 Save failed';
+    quizState.view="result";
+  }else{
+    quizState.curQ++;quizState.selected=null;quizState.shortVal="";quizState.answered=false;
+  }
+  render();
+}
+
+/* ════════ ADMIN MODE ════════ */
+function renderAdmin(){
+  const a=adminState;
+  if(!a.authed) return renderAdminLogin();
+  return renderAdminDashboard();
+}
+
+function renderAdminLogin(){
+  const a=adminState;
+  return `<div class="pg-light" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 46px)">
+    <div style="background:#FFFDF8;border:1.5px solid #D4C9B8;border-radius:16px;padding:40px 32px;max-width:380px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06)">
+      <div style="font-size:40px;margin-bottom:12px">🔒</div>
+      <h2 style="color:#000;font-size:20px;font-weight:800;margin-bottom:6px">관리자 인증 Admin Login</h2>
+      <p style="color:#888;font-size:13px;margin-bottom:24px">비밀번호를 입력하세요 Enter password</p>
+      <div style="display:flex;gap:8px">
+        <input id="adminPw" type="password" placeholder="비밀번호 Password" style="flex:1;border:1.5px solid ${a.pwErr?'#f9423a':'#D4C9B8'};border-radius:10px;padding:12px 14px;font-size:14px;outline:none;color:#000;background:#F5F0E8">
+        <button onclick="adminLogin()" style="background:#000;color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:700">확인 OK</button>
+      </div>
+      ${a.pwErr?'<p style="color:#f9423a;font-size:12px;font-weight:600;margin-top:10px">비밀번호가 올바르지 않습니다 Incorrect password</p>':''}
+    </div>
+  </div>`;
+}
+
+function adminLogin(){
+  const pw=document.getElementById('adminPw')?.value||'';
+  if(pw===ADMIN_PW){adminState.authed=true;adminState.pwErr=false;}else{adminState.pwErr=true;}
+  render();
+}
+
+function renderAdminDashboard(){
+  const a=adminState;const vol=getVol();const qs=vol.questions;const data=getBoard();
+  let filtered=[...data];
+  if(a.filter==="perfect")filtered=filtered.filter(e=>e.pct===100);
+  if(a.filter==="wrong")filtered=filtered.filter(e=>e.pct<100);
+  if(a.filter==="hidden")filtered=filtered.filter(e=>e.hidden);
+  if(a.search){const s=a.search.toLowerCase();filtered=filtered.filter(e=>(e.name||'').toLowerCase().includes(s)||(e.team||'').toLowerCase().includes(s));}
+  if(a.sortBy==="score")filtered.sort((x,y)=>y.pct-x.pct||x.ts-y.ts);
+  else if(a.sortBy==="name")filtered.sort((x,y)=>(x.name||'').localeCompare(y.name||''));
+  else filtered.sort((x,y)=>y.ts-x.ts);
+
+  const tot=data.length,perf=data.filter(e=>e.pct===100).length,hiddenCnt=data.filter(e=>e.hidden).length;
+  const avg=tot>0?Math.round(data.reduce((s,e)=>s+e.pct,0)/tot):0;
+  const qAcc=qs.map((_,qi)=>{const ans=data.filter(e=>e.scores&&e.scores[qi]!==undefined);const cor=ans.filter(e=>e.scores[qi]);return ans.length?Math.round((cor.length/ans.length)*100):0;});
+
+  let h=`<div class="pg-light"><div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <div>
+        <span style="background:#f9423a;color:#fff;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700">ADMIN</span>
+        <h1 style="color:#000;font-size:22px;font-weight:800;margin-top:4px">📊 GP 애정고사 관리 대시보드</h1>
+        <p style="color:#888;font-size:11px">GP Trivia Challenge Admin Dashboard</p>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="refreshData()" style="background:#FFFDF8;border:1px solid #D4C9B8;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:600;color:#000">🔄 새로고침</button>
+        <button onclick="exportExcel()" style="background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2);border-radius:8px;padding:7px 14px;font-size:11px;font-weight:600;color:#16A34A">📥 엑셀 Excel</button>
+        ${tot>0?`<button onclick="resetAllAdmin()" style="background:rgba(249,66,58,.06);border:1px solid rgba(249,66,58,.2);border-radius:8px;padding:7px 14px;font-size:11px;font-weight:600;color:#f9423a">전체 삭제</button>`:''}
+        <button onclick="adminState.authed=false;render()" style="background:#FFFDF8;border:1px solid #D4C9B8;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:600;color:#888">🔒 잠금</button>
+      </div>
+    </div>`;
+
+  h+=`<div style="margin-bottom:20px"><p style="color:#888;font-size:10px;font-weight:600;margin-bottom:8px">회차 선택 Select Volume</p><div style="display:flex;gap:6px;flex-wrap:wrap">`;
+  VOLUMES.forEach((v,i)=>{
+    const sel=i===volIdx;
+    h+=`<button onclick="volIdx=${i};adminState.filter='all';adminState.search='';adminState.expandedId=null;refreshData()" class="filter-btn ${sel?'active':''}">${esc(v.label)}</button>`;
+  });
+  h+=`</div></div>`;
+
+  h+=`<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+    <div class="stat-card"><p class="stat-label">총 참여자 Participants</p><p class="stat-value" style="color:#000">${tot}</p><p style="color:#888;font-size:10px;margin-top:3px">명 ppl</p></div>
+    <div class="stat-card" style="background:rgba(22,163,74,.06)"><p class="stat-label">만점자 Perfect</p><p class="stat-value" style="color:#16A34A">${perf}</p>${tot?`<p style="color:#888;font-size:10px;margin-top:3px">${Math.round((perf/tot)*100)}%</p>`:''}</div>
+    <div class="stat-card"><p class="stat-label">평균 정답률 Avg</p><p class="stat-value" style="color:${avg>=80?'#16A34A':avg>=50?'#CA8A04':'#f9423a'}">${avg}%</p></div>
+  </div>`;
+
+  if(tot>0){
+    h+=`<div style="background:#FFFDF8;border:1px solid #D4C9B8;border-radius:14px;padding:16px 18px;margin-bottom:20px">
+      <p style="color:#000;font-size:13px;font-weight:700;margin-bottom:12px">문제별 정답률 Per-Question Accuracy</p>`;
+    qs.forEach((qq,i)=>{
+      const c=qAcc[i]>=70?'#16A34A':qAcc[i]>=40?'#CA8A04':'#f9423a';
+      h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="color:#888;font-size:10px;font-weight:700;min-width:24px">Q${qq.id}</span>
+        <span style="color:#333;font-size:10px;min-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(qq.short)}</span>
+        <div style="flex:1;height:7px;border-radius:99px;background:#F5F0E8;overflow:hidden"><div style="width:${qAcc[i]}%;height:100%;border-radius:99px;background:${c}"></div></div>
+        <span style="color:${c};font-size:11px;font-weight:700;min-width:32px;text-align:right">${qAcc[i]}%</span>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+
+  h+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <div style="display:flex;gap:5px">
+      <button class="filter-btn ${a.filter==='all'?'active':''}" onclick="adminState.filter='all';render()">전체 All (${tot})</button>
+      <button class="filter-btn ${a.filter==='perfect'?'active':''}" onclick="adminState.filter='perfect';render()">⭐ 만점 (${perf})</button>
+      <button class="filter-btn ${a.filter==='wrong'?'active':''}" onclick="adminState.filter='wrong';render()">오답 Wrong</button>
+      ${hiddenCnt>0?`<button class="filter-btn ${a.filter==='hidden'?'active':''}" onclick="adminState.filter='hidden';render()">👁‍🗨 비노출 (${hiddenCnt})</button>`:''}
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <input id="adminSearch" placeholder="검색 Search" value="${esc(a.search)}" style="background:#FFFDF8;border:1px solid #D4C9B8;border-radius:8px;padding:7px 10px;font-size:11px;outline:none;width:130px;color:#000">
+      <button class="sort-btn ${a.sortBy==='time'?'active':''}" onclick="adminState.sortBy='time';render()">최신 Latest</button>
+      <button class="sort-btn ${a.sortBy==='score'?'active':''}" onclick="adminState.sortBy='score';render()">점수 Score</button>
+      <button class="sort-btn ${a.sortBy==='name'?'active':''}" onclick="adminState.sortBy='name';render()">이름 Name</button>
+    </div>
+  </div>`;
+
+  if(filtered.length===0){
+    h+=`<div style="background:#FFFDF8;border:1px solid #D4C9B8;border-radius:14px;padding:36px;text-align:center"><p style="color:#888;font-size:13px">데이터 없음 No data</p></div>`;
+  }else{
+    h+=`<div style="background:#FFFDF8;border:1px solid #D4C9B8;border-radius:14px;overflow:hidden">`;
+    h+=`<div class="adm-row adm-header"><span>#</span><span>이름 Name</span><span>소속 Team</span><span style="text-align:center">결과 Results</span><span style="text-align:center">점수</span><span style="text-align:center">정답률</span><span></span></div>`;
+    filtered.forEach((e,idx)=>{
+      const isExp=a.expandedId===`${e.name}-${e.ts}`;const isPerfect=e.pct===100;const isHidden=!!e.hidden;
+      const bg=isExp?'rgba(249,66,58,.03)':isHidden?'rgba(202,138,4,.04)':isPerfect?'rgba(22,163,74,.04)':'transparent';
+      h+=`<div class="adm-row" style="background:${bg};opacity:${isHidden?.6:1}" onclick="toggleExpand('${e.name}-${e.ts}')">
+        <span style="color:#888;font-size:11px;font-weight:600">${idx+1}</span>
+        <span style="color:#000;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.name)}${isPerfect?' ⭐':''}${isHidden?' 👁‍🗨':''}</span>
+        <span style="color:#333;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.team||'—')}</span>
+        <div style="display:flex;gap:2px;justify-content:center">${e.scores?e.scores.map((s,i)=>`<div class="q-dot" style="background:${s?'rgba(22,163,74,.1)':'rgba(249,66,58,.1)'};border:1px solid ${s?'rgba(22,163,74,.2)':'rgba(249,66,58,.2)'};color:${s?'#16A34A':'#f9423a'}">Q${i+1}</div>`).join(''):'—'}</div>
+        <span style="text-align:center;color:#f9423a;font-size:12px;font-weight:700">${e.correct}/${e.total}</span>
+        <span style="text-align:center;font-size:10px;font-weight:700;border-radius:5px;padding:2px 0;background:${e.pct>=80?'rgba(22,163,74,.1)':e.pct>=40?'rgba(202,138,4,.1)':'rgba(249,66,58,.1)'};color:${e.pct>=80?'#16A34A':e.pct>=40?'#CA8A04':'#f9423a'}">${e.pct}%</span>
+        <span style="text-align:center;color:#D4C9B8;font-size:12px;transition:transform .2s;transform:rotate(${isExp?180:0}deg)">▾</span>
+      </div>`;
+
+      if(isExp){
+        const fmtTime=ts=>{const d=new Date(ts);return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
+        h+=`<div class="expand-detail">
+          <div style="display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap">
+            <div><span style="color:#888;font-size:9px;font-weight:600">참여일시 Date</span><p style="color:#000;font-size:12px;font-weight:600;margin-top:2px">${fmtTime(e.ts)}</p></div>
+            <div><span style="color:#888;font-size:9px;font-weight:600">이름 Name</span><p style="color:#000;font-size:12px;font-weight:600;margin-top:2px">${esc(e.name)}</p></div>
+            <div><span style="color:#888;font-size:9px;font-weight:600">소속 Team</span><p style="color:#000;font-size:12px;font-weight:600;margin-top:2px">${esc(e.team||'—')}</p></div>
+            <div><span style="color:#888;font-size:9px;font-weight:600">애정도 리더보드 상태 Board Status</span><p style="color:${isHidden?'#f9423a':'#16A34A'};font-size:12px;font-weight:600;margin-top:2px">${isHidden?'비노출 Hidden':'노출 중 Visible'}</p></div>
+          </div>`;
+        qs.forEach((qq,i)=>{
+          const ok=e.scores?.[i];const ua=e.answers?.[i]||'—';
+          h+=`<div class="detail-q">
+            <span style="color:#f9423a;font-size:10px;font-weight:700">Q${qq.id}</span>
+            <span style="color:#333;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(qq.short)} ${esc(qq.shortEn)}</span>
+            <div><span style="font-size:8px;color:#888;font-weight:600">선택 Chosen</span><p style="margin-top:1px;font-size:11px;font-weight:600;color:${ok?'#16A34A':'#f9423a'}">${esc(String(ua))}</p></div>
+            <div><span style="font-size:8px;color:#888;font-weight:600">정답 Answer</span><p style="margin-top:1px;font-size:11px;font-weight:600;color:#000">${esc(qq.answerLabel)}</p></div>
+            <span style="font-size:13px;text-align:center">${ok?'✅':'❌'}</span>
+          </div>`;
+        });
+        h+=`<div style="margin-top:12px;text-align:right">
+          <button onclick="event.stopPropagation();toggleHidden('${e.name}',${e.ts})" style="background:${isHidden?'rgba(22,163,74,.06)':'rgba(249,66,58,.06)'};border:1px solid ${isHidden?'rgba(22,163,74,.2)':'rgba(249,66,58,.2)'};border-radius:7px;padding:7px 16px;font-size:11px;font-weight:600;color:${isHidden?'#16A34A':'#f9423a'}">
+            ${isHidden?'✅ GP 애정도 리더보드에 다시 노출 Show on GP Trivia Leaderboard':'👁‍🗨 GP 애정도 리더보드에서 비노출 Hide from GP Trivia Leaderboard'}
+          </button>
+        </div></div>`;
+      }
+    });
+    h+=`</div>`;
+  }
+  h+=`</div></div>`;
+  return h;
+}
+
+function toggleExpand(id){adminState.expandedId=adminState.expandedId===id?null:id;render();}
+async function toggleHidden(name,ts){
+  const vol=getVol();
+  showLoading(true);
+  const result = await sToggleHiddenAsync(vol.storageKey, name, ts);
+  if(result.ok !== undefined) {
+    const sn = sheetName(vol.storageKey);
+    const cached = _cache[sn] || [];
+    const idx = cached.findIndex(e=>e.ts===ts&&e.name===name);
+    if(idx!==-1) cached[idx].hidden = result.hidden;
+  }
+  showLoading(false);
+  render();
+}
+async function resetAllAdmin(){
+  if(!confirm('정말 전체 기록을 삭제하시겠습니까?\nDelete ALL records permanently?'))return;
+  showLoading(true);
+  await sClearAsync(getVol().storageKey);
+  showLoading(false);
+  render();
+}
+function exportExcel(){
+  const vol=getVol();const qs=vol.questions;const data=getBoard();
+  const BOM="\uFEFF";
+  const header=["순위 Rank","이름 Name","소속 Team",...qs.flatMap(q=>[`Q${q.id} 답안 Answer`,`Q${q.id} 정답여부 Result`]),"총점 Score","정답률(%) Accuracy","참여일시 Date","숨김여부 Hidden"];
+  const sorted=[...data].sort((a,b)=>b.pct-a.pct||a.ts-b.ts);
+  const rows=sorted.map((e,i)=>{
+    const d=new Date(e.ts);const ts=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const cols=[i+1,e.name||'',e.team||''];
+    for(let qi=0;qi<qs.length;qi++){cols.push(e.answers?.[qi]||'—');cols.push(e.scores?.[qi]?'O':'X');}
+    cols.push(`${e.correct}/${e.total}`,e.pct,ts,e.hidden?'Y':'N');return cols;
+  });
+  const csv=BOM+[header,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`GP_Trivia_Challenge_${vol.key}_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function bindEvents(){
+  const searchEl=document.getElementById('adminSearch');
+  if(searchEl){searchEl.oninput=function(){adminState.search=this.value;render();};}
+  const shortEl=document.getElementById('shortInput');
+  if(shortEl){
+    shortEl.onkeydown=function(e){if(e.key==='Enter'){const v=this.value.trim();if(v)pickAnswer(v);}};
+    shortEl.oninput=function(){quizState.shortVal=this.value;};
+  }
+  const pwEl=document.getElementById('adminPw');
+  if(pwEl){pwEl.onkeydown=function(e){if(e.key==='Enter')adminLogin();};}
+}
+
+(async function init() {
+  render();
+  await sLoadAsync(getVol().storageKey);
+  render();
+})();
+</script>
+</body>
+</html>
