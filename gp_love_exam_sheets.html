@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GP 애정고사 | GP Trivia Challenge</title>
+<title>GP CONNECT 애정고사 | GP Trivia Challenge</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,sans-serif;background:#F5F0E8;color:#000;min-height:100vh}
@@ -260,7 +260,7 @@ function renderQuizHome(vol,board){
   let h=`<div class="pg-dark">
     <div class="exam-header">
       <span class="pill" style="background:rgba(249,66,58,.08);color:#f9423a;border:1px solid rgba(249,66,58,.2)">GP CONNECT</span>
-      <h1 style="font-size:26px;font-weight:800;margin:14px 0 2px;color:#000;letter-spacing:-0.5px">🎓 GP 애정고사</h1>
+      <h1 style="font-size:26px;font-weight:800;margin:14px 0 2px;color:#000;letter-spacing:-0.5px">🎓 GP CONNECT 애정고사</h1>
       <p style="color:#f9423a;font-size:13px;font-weight:600;margin:0 0 6px">GP Trivia Challenge</p>
       <p style="color:#888;font-size:13px">뉴스레터를 얼마나 꼼꼼히 읽으셨나요?<br>Think you caught everything in this issue?</p>
     </div>`;
@@ -284,7 +284,7 @@ function renderQuizHome(vol,board){
   </div>`;
   h+=`<div class="cd">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h3 style="font-size:14px;font-weight:700;color:#000">🏆 GP 애정도 리더보드 GP Trivia Leaderboard <span style="color:#888;font-weight:500;font-size:11px">(${board.length})</span></h3>
+      <h3 style="font-size:14px;font-weight:700;color:#000">🏆 GP CONNECT 애정도 리더보드 GP Trivia Leaderboard <span style="color:#888;font-weight:500;font-size:11px">(${board.length})</span></h3>
       <button onclick="refreshData()" style="background:none;border:none;color:#f9423a;font-size:11px;font-weight:600">새로고침 Refresh</button>
     </div>`;
   if(board.length===0) h+=`<p style="color:#888;font-size:12px;text-align:center;padding:14px 0">아직 참여자가 없습니다 No participants yet</p>`;
@@ -329,7 +329,7 @@ function renderQuizResult(vol,board,TOTAL){
   });
   h+=`</div></div>`;
   h+=`<div class="cd">
-    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#000">🏆 GP 애정도 리더보드 GP Trivia Leaderboard</h3>`;
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#000">🏆 GP CONNECT 애정도 리더보드 GP Trivia Leaderboard</h3>`;
   board.slice(0,10).forEach((e,i)=>{
     const isMe=myRank===i;
     h+=`<div class="board-row ${isMe?'me':''}" style="background:${isMe?'rgba(249,66,58,.08)':i<3?(i===0?'rgba(249,66,58,.04)':'rgba(0,0,0,.02)'):'transparent'}">
@@ -510,7 +510,7 @@ function renderAdminDashboard(){
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
       <div>
         <span style="background:#f9423a;color:#fff;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700">ADMIN</span>
-        <h1 style="color:#000;font-size:22px;font-weight:800;margin-top:4px">📊 GP 애정고사 관리 대시보드</h1>
+        <h1 style="color:#000;font-size:22px;font-weight:800;margin-top:4px">📊 GP CONNECT 애정고사 관리 대시보드</h1>
         <p style="color:#888;font-size:11px">GP Trivia Challenge Admin Dashboard</p>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -603,7 +603,7 @@ function renderAdminDashboard(){
         });
         h+=`<div style="margin-top:12px;text-align:right">
           <button onclick="event.stopPropagation();toggleHidden('${e.name}',${e.ts})" style="background:${isHidden?'rgba(22,163,74,.06)':'rgba(249,66,58,.06)'};border:1px solid ${isHidden?'rgba(22,163,74,.2)':'rgba(249,66,58,.2)'};border-radius:7px;padding:7px 16px;font-size:11px;font-weight:600;color:${isHidden?'#16A34A':'#f9423a'}">
-            ${isHidden?'✅ GP 애정도 리더보드에 다시 노출 Show on GP Trivia Leaderboard':'👁‍🗨 GP 애정도 리더보드에서 비노출 Hide from GP Trivia Leaderboard'}
+            ${isHidden?'✅ GP CONNECT 애정도 리더보드에 다시 노출 Show on GP Trivia Leaderboard':'👁‍🗨 GP CONNECT 애정도 리더보드에서 비노출 Hide from GP Trivia Leaderboard'}
           </button>
         </div></div>`;
       }
