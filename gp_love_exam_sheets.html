@@ -153,7 +153,42 @@ const QUESTIONS_VOL3 = [
    factCheck:"KFC와 크레토스를 합친 'KFC 크레토스'라는 별칭으로 불렸습니다.\nFans coined the nickname 'KFC Kratos' combining KFC and the God of War's Kratos."},
 ];
 
-const VOLUMES=[{key:"draft",label:"제3회 · Vol.9 (2026년 4월)",labelEn:"3rd · Vol.9 (Apr 2026)",storageKey:"gp-exam-html-draft",questions:QUESTIONS_VOL3}];
+const QUESTIONS_VOL4 = [
+  {id:1,type:"multiple",tag:"COVER STORY",short:"Subnautica IP 시리즈",shortEn:"Subnautica IP & Series",
+   question:"다음 중 Subnautica IP 및 시리즈에 대한 설명으로 옳지 않은 것은?",
+   questionEn:"Which of the following statements about the Subnautica IP and series is NOT correct?",
+   options:["Subnautica 시리즈의 핵심 철학은 '비살상(Non-Lethal)'으로, 게임 내에서 살상용 총기가 배제되어 있다.\nThe core philosophy of the Subnautica series is 'Non-Lethal,' and lethal firearms are excluded from the game.","'서브넛(Subnauts)'은 Sub(수중)과 Naut(탐험가)를 결합한 단어로 플레이어들을 일컫는 공식 애칭이다.\n'Subnauts' is the official term for players, combining 'Sub' (underwater) and 'Naut' (explorer).","Subnautica: Below Zero는 처음부터 독립 타이틀로 기획되어 개발되었다.\nSubnautica: Below Zero was planned and developed as a standalone title from the start.","시리즈 전체 누적 판매량은 1,850만 장이며, 순수 구매자(Unique Owners)는 1,300만 명 이상이다.\nThe series has sold a cumulative 18.5 million copies, with over 13 million unique owners.","2025년 7월 출시된 모바일 버전은 'GamingonPhone Awards 2025' 인디 모바일 게임 부문을 수상했다.\nThe mobile version released in July 2025 won Best Indie Mobile Game at the GamingonPhone Awards 2025."],
+   answer:2,answerLabel:"3번 / Choice 3",
+   factCheck:"Subnautica: Below Zero는 본래 Subnautica의 추가 콘텐츠(DLC)로 기획되었다가 방대한 분량 덕분에 단독 타이틀로 전환되었습니다. '처음부터 독립 타이틀로 기획'되었다는 설명은 사실과 다릅니다.\nSubnautica: Below Zero began life as DLC and grew into a standalone title due to its expanding scope. The statement that it was 'planned as a standalone title from the start' is incorrect."},
+  {id:2,type:"multiple",tag:"COVER STORY",short:"SN2 협동 플레이 세션 방식",shortEn:"SN2 Co-op Session Format",
+   question:"Subnautica 2에서 시리즈 최초로 도입되는 협동 플레이의 세션 방식은 무엇인가?",
+   questionEn:"What is the session format for the co-op play introduced for the first time in Subnautica 2?",
+   options:["매치메이킹(Matchmaking) 방식\nMatchmaking system","드롭인/드롭아웃(Drop-in/Drop-out) 방식\nDrop-in/Drop-out system","로비 초대(Lobby Invite) 방식\nLobby Invite system","세션 예약(Session Reservation) 방식\nSession Reservation system"],
+   answer:1,answerLabel:"2번 / Choice 2",
+   factCheck:"Subnautica 2는 시리즈 최초로 4인 협동 플레이를 도입하며, 드롭인/드롭아웃(Drop-in/Drop-out) 세션 방식을 채택해 진행 중인 탐험에 동료가 언제든 합류하거나 빠질 수 있도록 설계되었습니다.\nSubnautica 2 introduces 4-player co-op for the first time, with a drop-in/drop-out session design allowing teammates to join or leave ongoing exploration at any time."},
+  {id:3,type:"multiple",tag:"COVER STORY",short:"SN2 게임 특징",shortEn:"SN2 Game Features",
+   question:"다음 중 Subnautica 2의 게임 특징에 대한 설명으로 옳지 않은 것은?",
+   questionEn:"Which of the following statements about Subnautica 2's features is NOT correct?",
+   options:["언리얼 엔진 5를 활용해 수중의 빛 반사와 물의 질감을 실사 수준으로 구현했다.\nIt uses Unreal Engine 5 to render underwater light reflections and water textures at near-photorealistic fidelity.","적응 특성 시스템(Adaptation System)을 통해 플레이어가 자신의 신체를 외계 환경에 맞춰 변형할 수 있다.\nThe Adaptation System allows players to physically modify their bodies to suit the alien environment.","전작들의 배경이었던 4546B 행성의 미탐험 지역에서 새로운 이야기가 펼쳐진다.\nThe story takes place in unexplored regions of planet 4546B, the setting of previous titles.","신규 소형 잠수정 '태드폴(Tadpole)'이 초반 탐험 파트너로 등장한다.\nA new compact submersible called 'Tadpole' serves as an early-game exploration companion.","베이스 건설 시스템이 프로시저럴(Procedural) 방식의 모듈형으로 전면 재설계되었다.\nThe base-building system has been completely redesigned with a procedural, modular approach."],
+   answer:2,answerLabel:"3번 / Choice 3",
+   factCheck:"Subnautica 2는 전작들의 배경이었던 4546B 행성을 떠나 완전히 새로운 외계 행성에서 이야기가 펼쳐집니다. '4546B 행성의 미탐험 지역'이라는 설명은 사실과 다릅니다.\nSubnautica 2 leaves planet 4546B behind entirely and takes place on a completely new alien planet. The statement about 'unexplored regions of 4546B' is incorrect."},
+  {id:4,type:"multiple",tag:"PERSPECTIVE",short:"PERSPECTIVE 첫 번째 콘텐츠",shortEn:"First PERSPECTIVE Article",
+   question:"다음 중 이번 5월호에 새롭게 시작된 카테고리 'PERSPECTIVE'의 첫 번째 콘텐츠에 대한 설명으로 옳지 않은 것은?",
+   questionEn:"Which of the following statements about the first PERSPECTIVE article in the May issue is NOT correct?",
+   options:["PERSPECTIVE는 게임 산업과 퍼블리싱 비즈니스에 대한 GP 리더들의 관점과 인사이트를 담는 카테고리이다.\nPERSPECTIVE is a category dedicated to the views and insights of GP leaders on the games industry and publishing business.","첫 번째 인터뷰이는 East Publishing Services Div.를 이끄는 정수영 본부장이다.\nThe first interviewee is Sue Jong, Head of East Publishing Services Div.","East Publishing이 담당하는 시장은 CN, TW, KR, SEA 네 권역이다.\nThe four markets covered by East Publishing are CN, TW, KR, and SEA.","East Publishing은 단순한 마케팅과 운영을 넘어 게임 개발에 직접 인풋을 줄 수 있는 조직을 지향한다.\nEast Publishing aims to go beyond marketing and operations to directly shape how games are made."],
+   answer:2,answerLabel:"3번 / Choice 3",
+   factCheck:"East Publishing이 담당하는 네 시장은 CN, TW, JP, SEA입니다. KR(한국)이 아니라 JP(일본)가 포함됩니다.\nThe four markets covered by East Publishing are CN, TW, JP, and SEA. The correct market is JP (Japan), not KR (Korea)."},
+  {id:5,type:"ox",tag:"BULLETIN",short:"딩컴 스팀 1주년 + Switch 2",shortEn:"Dinkum Steam Anniversary + Switch 2",
+   question:"이번 5월호 BULLETIN 섹션에 따르면, '딩컴(Dinkum)'은 스팀 1주년을 기념해 대규모 업데이트와 함께 닌텐도 스위치 2 에디션을 출시했다.",
+   questionEn:"According to the BULLETIN section of the May issue, Dinkum celebrated its 1st Steam anniversary with a major update and the release of a Nintendo Switch 2 edition.",
+   answer:"O",answerLabel:"O",
+   factCheck:"BULLETIN 섹션의 보도자료에 따르면, 크래프톤은 '딩컴' 스팀 1주년을 기념해 대규모 업데이트 및 닌텐도 스위치 2 에디션 출시를 발표했습니다.\nAccording to the BULLETIN press release, KRAFTON announced a major update and Switch 2 edition for Dinkum's 1st Steam anniversary."},
+];
+
+const VOLUMES=[
+  {key:"draft",label:"제3회 · Vol.9 (2026년 4월)",labelEn:"3rd · Vol.9 (Apr 2026)",storageKey:"gp-exam-html-draft",questions:QUESTIONS_VOL3},
+  {key:"vol4",label:"제4회 · Vol.10 (2026년 5월)",labelEn:"4th · Vol.10 (May 2026)",storageKey:"gp-exam-html-vol4",questions:QUESTIONS_VOL4}
+];
 const ADMIN_PW="gp2026!";
 
 const _cache = {};
@@ -229,7 +264,7 @@ let adminState={authed:false,pw:"",pwErr:false,filter:"all",search:"",expandedId
 
 function getVol(){return VOLUMES[volIdx];}
 function getBoard(){return sLoad(getVol().storageKey);}
-function getVisible(){return getBoard().filter(e=>!e.hidden);}
+function getVisible(){return getBoard().filter(e=>!e.hidden&&e.pct===100).sort((a,b)=>b.ts-a.ts);}
 
 function render(){
   const app=document.getElementById('app');
@@ -283,11 +318,12 @@ function renderQuizHome(vol,board){
     <button class="bp" style="width:100%" onclick="startQuiz()">시작하기 Start</button>
   </div>`;
   h+=`<div class="cd">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
       <h3 style="font-size:14px;font-weight:700;color:#000">🏆 GP CONNECT 애정도 리더보드 GP Trivia Leaderboard <span style="color:#888;font-weight:500;font-size:11px">(${board.length})</span></h3>
       <button onclick="refreshData()" style="background:none;border:none;color:#f9423a;font-size:11px;font-weight:600">새로고침 Refresh</button>
-    </div>`;
-  if(board.length===0) h+=`<p style="color:#888;font-size:12px;text-align:center;padding:14px 0">아직 참여자가 없습니다 No participants yet</p>`;
+    </div>
+    <p style="color:#888;font-size:10px;margin-bottom:14px">⭐ 만점자만 노출됩니다 Only perfect scorers are shown</p>`;
+  if(board.length===0) h+=`<p style="color:#888;font-size:12px;text-align:center;padding:14px 0">아직 만점자가 없습니다 No perfect scorers yet</p>`;
   else board.slice(0,10).forEach((e,i)=>{
     h+=`<div class="board-row" style="background:${i<3?(i===0?'rgba(249,66,58,.04)':'rgba(0,0,0,.02)'):'transparent'}">
       <span style="font-size:${i<3?15:11}px;color:#888;font-weight:700">${medal(i)}</span>
@@ -329,18 +365,25 @@ function renderQuizResult(vol,board,TOTAL){
   });
   h+=`</div></div>`;
   h+=`<div class="cd">
-    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;color:#000">🏆 GP CONNECT 애정도 리더보드 GP Trivia Leaderboard</h3>`;
-  board.slice(0,10).forEach((e,i)=>{
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:4px;color:#000">🏆 GP CONNECT 애정도 리더보드 GP Trivia Leaderboard</h3>
+    <p style="color:#888;font-size:10px;margin-bottom:14px">⭐ 만점자만 노출됩니다 Only perfect scorers are shown</p>`;
+  if(pct===100&&board.length>0){
+    board.slice(0,10).forEach((e,i)=>{
     const isMe=myRank===i;
     h+=`<div class="board-row ${isMe?'me':''}" style="background:${isMe?'rgba(249,66,58,.08)':i<3?(i===0?'rgba(249,66,58,.04)':'rgba(0,0,0,.02)'):'transparent'}">
       <span style="font-size:${i<3?15:11}px;color:${isMe?'#f9423a':'#888'};font-weight:700">${medal(i)}</span>
       <span style="font-size:12px;font-weight:${isMe?700:600};color:#000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.name)}${isMe?' ← You':''}</span>
       <span style="color:#888;font-size:10px">${esc(e.team||'-')}</span>
       <span style="text-align:center;color:#f9423a;font-size:12px;font-weight:700">${e.correct}/${e.total}</span>
-      <span style="text-align:center;font-size:10px;font-weight:700;border-radius:5px;padding:2px 0;background:${e.pct>=80?'rgba(22,163,74,.1)':e.pct>=40?'rgba(202,138,4,.1)':'rgba(249,66,58,.1)'};color:${e.pct>=80?'#16A34A':e.pct>=40?'#CA8A04':'#f9423a'}">${e.pct}%</span>
+      <span style="text-align:center;font-size:10px;font-weight:700;border-radius:5px;padding:2px 0;background:rgba(22,163,74,.1);color:#16A34A">${e.pct}%</span>
     </div>`;
-  });
-  if(myRank>9) h+=`<p style="color:#f9423a;font-size:12px;font-weight:600;text-align:center;margin-top:10px">나의 순위 My rank: #${myRank+1}</p>`;
+    });
+    if(myRank>9) h+=`<p style="color:#f9423a;font-size:12px;font-weight:600;text-align:center;margin-top:10px">나의 순위 My rank: #${myRank+1}</p>`;
+  } else if(pct===100&&board.length===0){
+    h+=`<p style="color:#888;font-size:12px;text-align:center;padding:14px 0">🎉 첫 번째 만점자입니다! You're the first perfect scorer!</p>`;
+  } else {
+    h+=`<p style="color:#888;font-size:12px;text-align:center;padding:14px 0">만점을 달성하면 리더보드에 이름이 올라갑니다!<br>Get a perfect score to appear on the leaderboard!</p>`;
+  }
   h+=`</div>
     <div style="text-align:center;margin-top:20px"><button class="bp" onclick="goQuizHome()">처음으로 Back to Start</button></div>
   </div>`;
@@ -601,7 +644,10 @@ function renderAdminDashboard(){
             <span style="font-size:13px;text-align:center">${ok?'✅':'❌'}</span>
           </div>`;
         });
-        h+=`<div style="margin-top:12px;text-align:right">
+        h+=`<div style="margin-top:12px;text-align:right;display:flex;gap:8px;justify-content:flex-end">
+          <button onclick="event.stopPropagation();deleteEntry('${e.name}',${e.ts})" style="background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);border-radius:7px;padding:7px 16px;font-size:11px;font-weight:600;color:#DC2626">
+            🗑 삭제 Delete
+          </button>
           <button onclick="event.stopPropagation();toggleHidden('${e.name}',${e.ts})" style="background:${isHidden?'rgba(22,163,74,.06)':'rgba(249,66,58,.06)'};border:1px solid ${isHidden?'rgba(22,163,74,.2)':'rgba(249,66,58,.2)'};border-radius:7px;padding:7px 16px;font-size:11px;font-weight:600;color:${isHidden?'#16A34A':'#f9423a'}">
             ${isHidden?'✅ GP CONNECT 애정도 리더보드에 다시 노출 Show on GP Trivia Leaderboard':'👁‍🗨 GP CONNECT 애정도 리더보드에서 비노출 Hide from GP Trivia Leaderboard'}
           </button>
@@ -625,6 +671,23 @@ async function toggleHidden(name,ts){
     const idx = cached.findIndex(e=>e.ts===ts&&e.name===name);
     if(idx!==-1) cached[idx].hidden = result.hidden;
   }
+  showLoading(false);
+  render();
+}
+async function deleteEntry(name,ts){
+  if(!confirm(`'${name}'의 기록을 삭제하시겠습니까?\nDelete the record of '${name}'?`))return;
+  const vol=getVol();
+  showLoading(true);
+  try {
+    const result = await gasCall({ action:"delete", sheet:sheetName(vol.storageKey), name:name, ts:ts });
+    if(result.ok) {
+      const sn = sheetName(vol.storageKey);
+      const cached = _cache[sn] || [];
+      const idx = cached.findIndex(e=>e.ts===ts&&e.name===name);
+      if(idx!==-1) cached.splice(idx,1);
+      adminState.expandedId=null;
+    }
+  } catch(e) { console.error("delete error:", e); }
   showLoading(false);
   render();
 }
